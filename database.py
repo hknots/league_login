@@ -2,7 +2,7 @@ import sqlite3
 
 class Database:
     def __init__(self):
-        self.conn = sqlite3.connect('user.db')
+        self.conn = sqlite3.connect('database.db')
         self.cursor = self.conn.cursor()
         self.try_make_table
 
@@ -11,9 +11,18 @@ class Database:
         try:
             # Attempts to make table 'users'
             self.cursor.execute("CREATE TABLE users (username text, password text, ign text, rank text, server text)")
+            self.cursor.execute("CREATE TABLE lolpath (path text)")
+            self.cursor.execute("INSERT INTO lolpath (path) VALUES ('C:/Riot Games/Riot Client/')")
             self.conn.commit()
         except:
             pass
+    
+    @property
+    def get_path(self):
+        self.cursor.execute("SELECT path FROM lolpath")
+        row = self.cursor.fetchall()
+        print(row[0][0])
+        return row[0][0]
     
     @property
     def get_column_widths(self):
