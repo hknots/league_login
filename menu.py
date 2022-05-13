@@ -12,15 +12,17 @@ def add_menu():
     password = input("Password: ")
     ign = input("IGN: ")
     server = input("Server: ")
-    while server not in ('euw1', 'na1'):
+
+    while server not in ('euw1', 'na1'): # If server not valid
         clear_terminal()
         print("Available servers: euw1 or na1")
         server = input("Server: ")
+
     clear_terminal()
     print(f"Are you sure you want to add {ign} to the database?")
     confirmation = input("Yes/No: ").capitalize()
-    confirmation = confirmation == "Yes"
-    if confirmation:
+    confirmation = confirmation in ("Yes", "Ye", "Y")
+    if confirmation: # Checks if user wants to add user to terminal
         db.add(username, password, ign, server)
         clear_terminal()
         print("User added!")
@@ -34,11 +36,13 @@ def main_menu():
 
 def users_menu():
     clear_terminal()
-    users = db.users
-    rowids = db.rowids
+    users = db.users # Users in database f.ex ['Mike', 'Bob', 'John']
+    rowids = db.rowids # Rows in database as strings f.ex ['1', '2', '3']
     rowids.append('0') # Exit selection
     column_width = db.get_column_widths # [3, 4, 6] example
-    format_string = f"{{:^3}} | {{:^{column_width[0]}}} | {{:^{column_width[1]}}} | {{:^{column_width[2]}}} | {{:^5}}"
-    print(f"{{:^3}} | {{:^{column_width[0]}}}".format('0', 'Exit'))
+
+    print(f"{{:^3}} | {{:^{column_width[0]}}}".format('0', 'Exit')) # Custom exit menu
+
+    format_string = f"{{:^3}} | {{:^{column_width[0]}}} | {{:^{column_width[1]}}} | {{:^{column_width[2]}}} | {{:^5}}" # placeholders looks like {:^variable}
     for i in range(len(users)):
         print(format_string.format(rowids[i], users[i][0], users[i][1], users[i][2], users[i][3][:-1].upper()))
