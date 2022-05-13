@@ -6,13 +6,23 @@ class Database:
     def __init__(self):
         self.conn = sqlite3.connect('user.db')
         self.cursor = self.conn.cursor()
+        self.try_make_table
+
+    @property
+    def try_make_table(self):
+        try:
+            # Attempts to make table 'users'
+            self.cursor.execute("CREATE TABLE users (username text, password text, ign text, rank text, server text)")
+            self.conn.commit()
+        except:
+            pass
     
     @property
     def get_column_widths(self):
         self.cursor.execute("SELECT username, ign, rank FROM users")
-        rows = self.cursor.fetchall()
+        rows = self.cursor.fetchall() # Fetches all rows from sql string
         column_widths = []
-        for i in range(len(self.cursor.description)):
+        for i in range(len(self.cursor.description)): # For every column selected
             column_widths.append(len(self.cursor.description[i][0])) # Sets Default value to the length of the column title
             for row in rows: # Checks all rows for the biggest length of each column
                 if isinstance(row[i], str):
@@ -33,7 +43,7 @@ class Database:
     
     @property
     def users(self):
-        self.cursor.execute("SELECT username, ign, rank FROM users")
+        self.cursor.execute("SELECT username, ign, rank, server FROM users")
         rows = self.cursor.fetchall()
         users = []
         for row in rows:
