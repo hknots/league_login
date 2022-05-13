@@ -12,7 +12,6 @@ class Window:
         # Stores the name of the window running the code
         self.window_name = win.GetWindowText (win.GetForegroundWindow())
         self.window = win.FindWindow(None, self.window_name)
-        self.startup
         self.adjust
 
     @property
@@ -40,12 +39,16 @@ class Window:
                 pass
         return False;
 
-    def move_ontop(self, windowName): # Moves selected window ontop
-            hwnd = win.FindWindow(None, windowName)
+    def move_ontop(self, window_name): # Moves selected window ontop
+        try:
+            hwnd = win.FindWindow(None, window_name)
             win.ShowWindow(hwnd,5)
             win.SetForegroundWindow(hwnd)
             rect = win.GetWindowRect(hwnd)
+            time.sleep(0.2)
             return rect
+        except:
+            pass
 
     def look_for_login(self): # Looks for login logo
         searching = True
@@ -55,17 +58,18 @@ class Window:
             if picture:
                 searching = False
             else:
+                self.startup
                 try:
                     self.move_ontop("Riot Client Main")
                 except:
-                    self.startup
-                    
+                    pass
                 count += 1
                 if count == 4:
                     count = 1
                 clear_terminal()
                 print(f"Searching{count*'.'}")
                 time.sleep(0.1)
+        self.move_ontop(f"{self.window_name}")
         clear_terminal()
     
     def login(self, username, password):
