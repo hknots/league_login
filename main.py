@@ -7,8 +7,8 @@ from riot_api import refresh_rank
 if __name__ == "__main__":
     db = Database()
     window = Window()
-    window.look_for_login()
-    window.move_ontop(window.window_name)
+    window.look_for_login() # Looks for Riot login, attempts to launch and move it ontop
+    window.move_ontop(window.window_name) # Moves menu on top
     
     menu = True
     while menu:
@@ -44,23 +44,24 @@ if __name__ == "__main__":
                 clear_terminal()
                 print("Are you sure you want to remove this user?")
                 confirm = input("Yes/No: ").capitalize()
-                confirm = confirm == "Yes"
+                confirm = confirm in ("Yes", 'Ye', 'Y')
                 if confirm:
                     db.remove(remove_select)
                     clear_terminal()
                     print("User Removed!")
                     input("Press ANY key to continue...")
 
-        elif select == '4':
+        elif select == '4': # Refresh ranks
             clear_terminal()
             print("Refreshing ranks..")
-            rowids = db.rowids
-            igns = db.igns
-            servers = db.servers
+            rowids = db.rowids # example ['1', '2']
+            igns = db.igns # example ['bobgamer', 'liliOTP']
+            servers = db.servers # example ['euw1', 'na1']
             for i in range(len(igns)):
                 refresh_rank(rowids[i], igns[i], servers[i])
             clear_terminal()
             print("Ranked refreshed!")
             input("Press ANY button to continue...")
-        elif select == '5':
+
+        elif select == '5': # Exits menu
             menu = False
