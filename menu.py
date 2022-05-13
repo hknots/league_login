@@ -38,7 +38,7 @@ def users_menu():
     rowids = db.rowids
     rowids.append('0') # Exit selection
     column_width = db.get_column_widths # [3, 4, 6] example
-    format_string = f"{{:^3}} | {{:^{column_width[0]}}} | {{:^{column_width[1]}}} | {{:^{column_width[2]}}}"
+    format_string = f"{{:^3}} | {{:^{column_width[0]}}} | {{:^{column_width[1]}}} | {{:^{column_width[2]}}} | {{:^5}}"
     print(f"{{:^3}} | {{:^{column_width[0]}}}".format('0', 'Exit'))
     for i in range(len(users)):
-        print(format_string.format(rowids[i], *users[i]))
+        print(format_string.format(rowids[i], users[i][0], users[i][1], users[i][2], users[i][3][:-1].upper()))
