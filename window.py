@@ -4,8 +4,10 @@ import subprocess
 import time
 import pyautogui as pya
 import os
-
+from database import Database
 from menu import clear_terminal
+
+db = Database()
 
 class Window:
     def __init__(self):
@@ -16,9 +18,20 @@ class Window:
 
     @property
     def startup(self): # Starts League if it isnt running
-        if not self.process_running("RiotClientServices"):
-            start_args = ['C:\Riot Games\Riot Client\RiotClientServices.exe', '--launch-product=league_of_legends', '--launch-patchline=live']
-            subprocess.Popen(start_args)
+        if not self.process_running("RiotClientServices"): # RiotClientServices.exe
+            looping = True
+            while looping:
+                try:
+                    path = db.get_path # Gets default path of RiotClientServices.exe
+                    start_args = [f'{path}RiotClientServices.exe', '--launch-product=league_of_legends', '--launch-patchline=live']
+                    subprocess.Popen(start_args)
+                    looping = False
+                except FileNotFoundError: # Lets user select path of where RiotClientServices.exe is located, then stores it in database
+                    clear_terminal()
+                    print("RiotClientServices.exe was not found\nPlease paste the path of RiotClientServices.exe and do not include the filename")
+                    print("Example: C:/Riot Games/Riot Client/")
+                    path = input("Path: ")
+                    db.execute_commit(f"UPDATE lolpath SET path='{path}'")
 
     @property
     def adjust(self):
