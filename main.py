@@ -1,4 +1,3 @@
-from os import terminal_size
 from window import Window
 from database import Database
 from menu import add_menu, users_menu, main_menu, clear_terminal
