@@ -13,10 +13,10 @@ def refresh_rank(rowid, ign, server):
 
     if len(ranked_stats) > 0:
         for i in range(len(ranked_stats)):
-            if ranked_stats[i]['queueType'] == 'RANKED_SOLO_5x5':
+            if ranked_stats[i]['queueType'] == 'RANKED_SOLO_5x5': # If the user has a rank
                 rank = f"{ranked_stats[i]['tier'].capitalize()} {ranked_stats[i]['rank']}"
-                return db.update("rank", rank, rowid)
+                return db.update("rank", rank, rowid) # Updates the users rank in database
                 
     # If user has no soloQ Rank
     rank = "Unranked"
-    return db.update("rank", rank, rowid)
+    return db.update("rank", rank, rowid) # Updates the users rank in database
