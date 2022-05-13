@@ -1,7 +1,5 @@
 import sqlite3
 
-from h11 import Data
-
 class Database:
     def __init__(self):
         self.conn = sqlite3.connect('user.db')
@@ -31,17 +29,6 @@ class Database:
         return column_widths # Returns list of column widths
     
     @property
-    def get_rows(self):
-        self.cursor.execute("SELECT username, ign, rank FROM users")
-        rows = self.cursor.fetchall()
-        for row in rows:
-            row = list(row)
-            for i in range(len(row)):
-                if isinstance(row[i], type(None)):
-                    row[i] = "XD"
-        return rows
-    
-    @property
     def users(self):
         self.cursor.execute("SELECT username, ign, rank, server FROM users")
         rows = self.cursor.fetchall()
@@ -49,7 +36,7 @@ class Database:
         for row in rows:
             row = list(row)
             for i in range(len(row)):
-                if isinstance(row[i], type(None)):
+                if isinstance(row[i], type(None)): # If data of user is None (for example ranking) then turn it into a string
                     row[i] = "None"
             row = tuple(row)
             users.append(row)
@@ -62,7 +49,7 @@ class Database:
         rowids = []
         for row in rows:
             rowids.append(str(row[0]))
-        return rowids
+        return rowids # Returns rowids strings as a list
     
     @property
     def igns(self):
@@ -71,7 +58,7 @@ class Database:
         igns = []
         for row in rows:
             igns.append(row[0])
-        return igns
+        return igns # Returns igns as a list
 
     @property
     def servers(self):
@@ -80,7 +67,7 @@ class Database:
         servers = []
         for row in rows:
             servers.append(row[0])
-        return servers
+        return servers # Returns servers as a list
 
     def update(self, column, value, rowid):
         self.execute_commit(f"UPDATE users SET {column}='{value}' WHERE Rowid='{rowid}'")
@@ -91,10 +78,7 @@ class Database:
     def remove(self, rowid):
         self.execute_commit(f"DELETE FROM users WHERE Rowid='{rowid}'")
     
-    def execute(self, sql):
-        self.cursor.execute(f"{sql}")
-    
-    def execute_commit(self, sql):
+    def execute_commit(self, sql): # Executes and commits it to database (saves it)
         self.cursor.execute(f"{sql}")
         self.conn.commit()
     
@@ -104,7 +88,4 @@ class Database:
         login_info = []
         login_info.append(rows[0][0])
         login_info.append(rows[0][1])
-        return login_info
-
-db = Database()
-db.rowids
+        return login_info # Returns username and password for login ['bob', 'superpassword']
