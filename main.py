@@ -1,66 +1,43 @@
 from window import Window
 from database import Database
-from menu import add_menu, users_menu, main_menu, clear_terminal
+from menu import Menu, clear_terminal
 from riot_api import refresh_ranks
-import time
 
 if __name__ == "__main__":
     db = Database()
     window = Window()
+    menu = Menu()
     window.look_for_login() # Looks for Riot login, attempts to launch and move it ontop
     window.move_ontop(window.window_name) # Moves menu on top
     
-    menu = True
-    while menu:
-        main_menu()
+    menu_loop = True
+    while menu_loop:
+        menu.main()
         select = input("Number: ")
-        while select not in ('1', '2', '3', '4', '5'):
-            main_menu()
+        while select not in [str(i) for i in range(1, len(menu.options)+1)]: # f.ex ['1', '2', '3']
+            menu.main()
             select = input("Number: ")
 
         if select == '1': # Logs in
-            users_menu()
+            menu.display_users()
             login_select = input("Num: ")
-            rowids = db.rowids
-            while login_select not in (rowids + ['0']):
-                users_menu()
+            ids = db.ids
+            while login_select not in (ids + ['0']):
+                menu.display_users()
                 login_select = input("Num: ")
-            if login_select in rowids:
-                menu = False
+            if login_select in ids:
+                menu_loop = False
                 login_info = db.login_info(login_select)
                 window.login(login_info[0], login_info[1])
                 
         elif select == '2': # Add user to database
-            add_menu()
+            menu.add_user()
 
         elif select == '3': # Removes user from database
-            users_menu()
-            remove_select = input("Num: ")
-            rowids = db.rowids
-            while remove_select not in (rowids + ['0']):
-                users_menu()
-                remove_select = input("Num: ")
-            if remove_select in rowids:
-                clear_terminal()
-                print("Are you sure you want to remove this user?")
-                confirm = input("Yes/No: ").capitalize()
-                confirm = confirm in ("Yes", 'Ye', 'Y')
-                if confirm:
-                    db.remove(remove_select)
-                    clear_terminal()
-                    print("User Removed!")
-                    time.sleep(1)
+            menu.remove_user()
 
         elif select == '4': # Refresh ranks
-            clear_terminal()
-            print("Refreshing ranks...")
-            igns = db.igns # example ['bobgamer', 'liliOTP']
-            if len(igns) > 0:
-                refresh_ranks()
-            else:
-                clear_terminal()
-                print("Add an user before attempting to refresh rankings")
-                input("Press ENTER to continue...")
+            refresh_ranks()
 
         elif select == '5': # Exits menu
-            menu = False
+            menu_loop = False
