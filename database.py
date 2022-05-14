@@ -10,9 +10,11 @@ class Database:
     def try_make_table(self):
         try:
             # Attempts to make table 'users'
-            self.cursor.execute("CREATE TABLE users (username text, password text, ign text, rank text, server text)")
+            self.cursor.execute("CREATE TABLE users (id integer, username text, password text, ign text, rank text, server text)")
             self.cursor.execute("CREATE TABLE lolpath (path text)")
             self.cursor.execute("INSERT INTO lolpath (path) VALUES ('C:/Riot Games/Riot Client/')")
+            self.cursor.execute("CREATE TABLE riotapi (api text)")
+            self.cursor.execute("INSERT INTO riotapi (api) VALUES ('None')")
             self.conn.commit()
         except:
             pass
@@ -34,15 +36,21 @@ class Database:
                 if len(row[i]) > column_widths[i]:
                     column_widths[i] = len(row[i])
         return column_widths # Returns list of column widths
+    
+    @property
+    def api(self):
+        self.cursor.execute("SELECT api FROM riotapi")
+        row = self.cursor.fetchall()
+        return row[0][0]
 
     @property
-    def rowids(self):
-        self.cursor.execute("SELECT rowid FROM users")
+    def ids(self):
+        self.cursor.execute("SELECT id FROM users")
         rows = self.cursor.fetchall()
-        rowids = []
+        ids = []
         for row in rows:
-            rowids.append(str(row[0]))
-        return rowids # Returns rowids strings as a list
+            ids.append(str(row[0]))
+        return ids # Returns ids strings as a list
     
     @property
     def igns(self):
@@ -71,21 +79,27 @@ class Database:
             servers.append(row[0])
         return servers # Returns servers as a list
 
-    def update(self, column, value, rowid):
-        self.execute_commit(f"UPDATE users SET {column}='{value}' WHERE Rowid='{rowid}'")
+    def update(self, column, value, id):
+        self.execute_commit(f"UPDATE users SET {column}='{value}' WHERE id='{id}'")
 
     def add(self, username, password, ign, server):
-        self.execute_commit(f"INSERT INTO users (username, password, ign, rank, server) VALUES ('{username}', '{password}', '{ign}', 'Unranked', '{server}')")
+        if len(self.igns) < 1:
+            self.execute_commit(f"INSERT INTO users (id, username, password, ign, rank, server) VALUES (1, '{username}', '{password}', '{ign}', 'Unranked', '{server}')")
+        else:
+            ids = [int(i) for i in self.ids]
+            id = max(ids) + 1
+            self.execute_commit(f"INSERT INTO users (id, username, password, ign, rank, server) VALUES ({id}, '{username}', '{password}', '{ign}', 'Unranked', '{server}')")
     
-    def remove(self, rowid):
-        self.execute_commit(f"DELETE FROM users WHERE Rowid='{rowid}'")
+    def remove(self, id):
+        self.execute_commit(f"DELETE FROM users WHERE id={id}")
+        self.execute_commit(f"UPDATE users SET id=(id - 1) WHERE id > {id}")
     
     def execute_commit(self, sql): # Executes and commits it to database (saves it)
         self.cursor.execute(f"{sql}")
         self.conn.commit()
     
-    def login_info(self, rowid):
-        self.cursor.execute(f"SELECT username, password from users WHERE Rowid={int(rowid)}")
+    def login_info(self, id):
+        self.cursor.execute(f"SELECT username, password from users WHERE id={int(id)}")
         rows = self.cursor.fetchall()
         login_info = []
         login_info.append(rows[0][0])
