@@ -1,28 +1,34 @@
-import os
-from dotenv import load_dotenv
 import requests
 from database import Database
 from menu import clear_terminal
 import time
 
-db = Database()
-
 def refresh_ranks():
-    load_dotenv(override=True)
-    api = os.getenv("API")
+    db = Database()
+
+    api = db.api
     rowid = db.rowids
     ign = db.igns
     server = db.servers
 
+    if len(ign) < 1:
+        return clear_terminal(), print("There must be at least 1 user in the database to update rankings."), input("Press ENTER to continue...")
+
+    print(ign[0], server[0], api)
+    input()
     if not valid_api(ign[0], server[0], api): # Checks if API is valid
         clear_terminal()
         print("Invalid API\nGet your personal API at https://developer.riotgames.com/ if you want to use this function.")
-        print("If you got an API key, paste it below.")
-
-        new_api = input("API: ") # Lets user paste new API
-        with open('.env', 'w') as env:
-            env.write(f"API={new_api}")
-        return clear_terminal(), print("Returning to main menu..."), time.sleep(1)
+        confirm = input("Want to add new API? (Yes/No): ").capitalize()
+        confirm = confirm in ("Yes", "Ye", "Y")
+        if confirm:
+            clear_terminal()
+            print("Get your own personal API from https://developer.riotgames.com/")
+            new_api = input("API: ") # Lets user paste new API
+            db.execute_commit(f"UPDATE riotapi SET api='{new_api}'")
+            return clear_terminal(), print("Trying again..."), time.sleep(1), refresh_ranks() # Go back and try API again
+        else:
+            return clear_terminal(), print("Returning to main menu..."), time.sleep(1)
 
     for i in range(len(ign)):
         user = requests.get(f"https://{server[i]}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{ign[i]}?api_key={api}").json()
