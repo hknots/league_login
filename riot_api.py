@@ -8,7 +8,7 @@ import time
 db = Database()
 
 def refresh_ranks():
-    load_dotenv()
+    load_dotenv(override=True)
     api = os.getenv("API")
     rowid = db.rowids
     ign = db.igns
