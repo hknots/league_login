@@ -7,6 +7,9 @@
 ### sqlite3 ###
 *.db
 
+### test file ###
+test.py
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
