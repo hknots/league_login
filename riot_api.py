@@ -29,9 +29,9 @@ def refresh_ranks():
         ranked_stats = requests.get(f"https://{server[i]}.api.riotgames.com/lol/league/v4/entries/by-summoner/{user['id']}?api_key={api}").json()
 
         if len(ranked_stats) > 0:
-            for i in range(len(ranked_stats)):
-                if ranked_stats[i]['queueType'] == 'RANKED_SOLO_5x5': # If the user has a rank
-                    rank = f"{ranked_stats[i]['tier'].capitalize()} {ranked_stats[i]['rank']}" # f.ex "Diamond I"
+            for x in range(len(ranked_stats)):
+                if ranked_stats[x]['queueType'] == 'RANKED_SOLO_5x5': # If the user has a rank
+                    rank = f"{ranked_stats[x]['tier'].capitalize()} {ranked_stats[x]['rank']}" # f.ex "Diamond I"
                     db.update("rank", rank, rowid[i]) # Updates the users rank in database
     
     return clear_terminal(), print("Rankings updated!"), time.sleep(1)
