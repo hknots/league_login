@@ -1,7 +1,5 @@
 import sqlite3
 
-from pandas import PeriodDtype
-
 class Database:
     def __init__(self):
         self.conn = sqlite3.connect('database.db')
