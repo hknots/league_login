@@ -2,6 +2,7 @@ from window import Window
 from database import Database
 from menu import add_menu, users_menu, main_menu, clear_terminal
 from riot_api import refresh_ranks
+import time
 
 if __name__ == "__main__":
     db = Database()
@@ -48,7 +49,7 @@ if __name__ == "__main__":
                     db.remove(remove_select)
                     clear_terminal()
                     print("User Removed!")
-                    input("Press ENTER to continue...")
+                    time.sleep(1)
 
         elif select == '4': # Refresh ranks
             clear_terminal()
