@@ -21,8 +21,7 @@ class Database:
     def get_path(self):
         self.cursor.execute("SELECT path FROM lolpath")
         row = self.cursor.fetchall()
-        print(row[0][0])
-        return row[0][0]
+        return row[0][0] # returns "C:/Riot Games/Riot Client/"
     
     @property
     def get_column_widths(self):
