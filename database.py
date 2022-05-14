@@ -1,5 +1,7 @@
 import sqlite3
 
+from pandas import PeriodDtype
+
 class Database:
     def __init__(self):
         self.conn = sqlite3.connect('database.db')
@@ -25,30 +27,15 @@ class Database:
     
     @property
     def get_column_widths(self):
-        self.cursor.execute("SELECT username, ign, rank FROM users")
+        self.cursor.execute("SELECT ign, rank, server FROM users")
         rows = self.cursor.fetchall() # Fetches all rows from sql string
         column_widths = []
         for i in range(len(self.cursor.description)): # For every column selected
             column_widths.append(len(self.cursor.description[i][0])) # Sets Default value to the length of the column title
             for row in rows: # Checks all rows for the biggest length of each column
-                if isinstance(row[i], str):
-                    if len(row[i]) > column_widths[i]:
-                        column_widths[i] = len(row[i])
+                if len(row[i]) > column_widths[i]:
+                    column_widths[i] = len(row[i])
         return column_widths # Returns list of column widths
-    
-    @property
-    def users(self):
-        self.cursor.execute("SELECT username, ign, rank, server FROM users")
-        rows = self.cursor.fetchall()
-        users = []
-        for row in rows:
-            row = list(row)
-            for i in range(len(row)):
-                if isinstance(row[i], type(None)): # If data of user is None (for example ranking) then turn it into a string
-                    row[i] = "None"
-            row = tuple(row)
-            users.append(row)
-        return users
 
     @property
     def rowids(self):
@@ -67,6 +54,15 @@ class Database:
         for row in rows:
             igns.append(row[0])
         return igns # Returns igns as a list
+    
+    @property
+    def ranks(self):
+        self.cursor.execute("SELECT rank FROM users")
+        rows = self.cursor.fetchall()
+        ranks = []
+        for row in rows:
+            ranks.append(row[0])
+        return ranks # Returns ranks as a list
 
     @property
     def servers(self):
@@ -81,7 +77,7 @@ class Database:
         self.execute_commit(f"UPDATE users SET {column}='{value}' WHERE Rowid='{rowid}'")
 
     def add(self, username, password, ign, server):
-        self.execute_commit(f"INSERT INTO users (username, password, ign, server) VALUES ('{username}', '{password}', '{ign}', '{server}')")
+        self.execute_commit(f"INSERT INTO users (username, password, ign, rank, server) VALUES ('{username}', '{password}', '{ign}', 'Unranked', '{server}')")
     
     def remove(self, rowid):
         self.execute_commit(f"DELETE FROM users WHERE Rowid='{rowid}'")
