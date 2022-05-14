@@ -1,7 +1,7 @@
 from window import Window
 from database import Database
 from menu import add_menu, users_menu, main_menu, clear_terminal
-from riot_api import refresh_rank
+from riot_api import refresh_ranks
 
 if __name__ == "__main__":
     db = Database()
@@ -48,21 +48,18 @@ if __name__ == "__main__":
                     db.remove(remove_select)
                     clear_terminal()
                     print("User Removed!")
-                    input("Press ANY key to continue...")
+                    input("Press ENTER to continue...")
 
         elif select == '4': # Refresh ranks
             clear_terminal()
-            print("Refreshing ranks..")
-            rowids = db.rowids # example ['1', '2']
+            print("Refreshing ranks...")
             igns = db.igns # example ['bobgamer', 'liliOTP']
-            servers = db.servers # example ['euw1', 'na1']
             if len(igns) > 0:
-                for i in range(len(igns)):
-                    refresh_rank(rowids[i], igns[i], servers[i])
+                refresh_ranks()
             else:
                 clear_terminal()
                 print("Add an user before attempting to refresh rankings")
-                input("Press ANY button to continue...")
+                input("Press ENTER to continue...")
 
         elif select == '5': # Exits menu
             menu = False
