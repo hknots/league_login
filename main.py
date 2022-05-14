@@ -56,11 +56,13 @@ if __name__ == "__main__":
             rowids = db.rowids # example ['1', '2']
             igns = db.igns # example ['bobgamer', 'liliOTP']
             servers = db.servers # example ['euw1', 'na1']
-            for i in range(len(igns)):
-                refresh_rank(rowids[i], igns[i], servers[i])
-            clear_terminal()
-            print("Ranked refreshed!")
-            input("Press ANY button to continue...")
+            if len(igns) > 0:
+                for i in range(len(igns)):
+                    refresh_rank(rowids[i], igns[i], servers[i])
+            else:
+                clear_terminal()
+                print("Add an user before attempting to refresh rankings")
+                input("Press ANY button to continue...")
 
         elif select == '5': # Exits menu
             menu = False
