@@ -1,10 +1,11 @@
 # league_login
-A login menu for League of Legends.
-It uses Riots API to fetch Ranked statistics about each user.
-That way, you'll know what rank the account is before you sign onto it.
-You can add or remove as many accounts as you like, its all stored on a local database using sqlite3.
+An automatic login menu for League of Legends.
+Once launched, it will attempt to launch league of legends if the process isnt already running.
+Thereafter you can Login, Add or Remove users from the local database, Refresh rankings, or Exit.
+The accounts will be displayed with their Solo/DuoQ ranking besides their names.
+That way the user knows exactly what rank the account is before signing in.
 
-Note if you want to refresh rankings you need to create a .env file in the directory of the project.
-Inside of .env you'll need to write API=YOURAPIKEY
+TLDR; This tool is for players who wants a faster login experience, or someone who has a lot of accounts.
 
-Note also that if your League of legends is not launching and you're getting an error, your league of legends is probably in a different directory than mine. Go into window.py and change the startup method. You're looking to change the first index inside of the start_args list to the directory of your Riot ClientServices.exe
+NOTE! To use the refresh ranking menu you'll need a developer api from https://developer.riotgames.com/
+Once you got an API, try refreshing and paste in the API key in the required field.
