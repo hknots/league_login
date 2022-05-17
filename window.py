@@ -22,6 +22,7 @@ class Window:
     def league_startup(self):
         start_attempt = True
         while start_attempt:
+            time.sleep(0.1)
             if self.process_running("RiotClientServices"): # If league is running
                 start_attempt = False
             else:
@@ -70,6 +71,7 @@ class Window:
         searching = True
         count = 1
         while searching:
+            time.sleep(0.1)
             picture = pya.locateOnScreen('./locate/riot.png')
             if picture:
                 searching = False
