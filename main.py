@@ -1,16 +1,15 @@
 from menu import Menu
 from window import Window
+import pyautogui as pya
 
 if __name__ == "__main__":
     menu = Menu()
     window = Window()
 
-    # Adjust menu
-    window.adjust
     window.look_for_login()
+    window.move_top("Riot Client Main")
     window.move_top(window.name)
 
-    # Menu
     main_menu = True
     while main_menu:
         menu.main()

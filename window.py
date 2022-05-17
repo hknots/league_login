@@ -7,17 +7,20 @@ import os
 import time
 
 db = Database()
+login_picture = "./locate/login.png"
 
 class Window:
     def __init__(self):
         self.name = win.GetWindowText (win.GetForegroundWindow())
         self.handle = win.FindWindow(None, self.name)
-    
+        self.adjust
+
 
     @property
     def clear(self):
         os.system('cls' if os.name == 'nt' else 'clear')
     
+
     @property
     def league_startup(self):
         start_attempt = True
@@ -41,7 +44,7 @@ class Window:
 
     @property
     def adjust(self):
-        win.MoveWindow(self.handle, 585, 315, 500, 500, False)
+        win.MoveWindow(self.handle, 585, 315, 650, 500, False)
 
 
     def process_running(self, process_name): # Checks if proccess is running
@@ -54,65 +57,54 @@ class Window:
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 pass
         return False;
-    
+
 
     def move_top(self, window_name):
-        try:
-            hwnd = win.FindWindow(None, window_name)
+        hwnd = win.FindWindow(None, window_name)
+        if hwnd != 0:
             win.ShowWindow(hwnd,5)
+            pya.press('alt')
             win.SetForegroundWindow(hwnd)
             rect = win.GetWindowRect(hwnd)
-            time.sleep(0.2)
             return rect
-        except:
+        else:
             pass
+        
     
     def look_for_login(self):
         searching = True
-        count = 1
         while searching:
-            time.sleep(0.1)
-            picture = pya.locateOnScreen('./locate/riot.png')
+            picture = pya.locateCenterOnScreen("./locate/login.png")
+            logged_in = pya.locateCenterOnScreen("./locate/logged_in.png")
+            
             if picture:
                 searching = False
-
-            else:
-                count += 1
-                if count == 4:
-                    count = 1
-
+            elif logged_in:
                 self.clear
-                print(f"Searching{count*'.'}")
-
-                self.league_startup # Starts league if it isnt running
-                self.move_top("Riot Client Main") # Move League to top
-
-        self.move_top("Riot Client Main")
-        self.move_top(self.name)
-
+                print("You are logged in")
+                time.sleep(1)
+                exit()
+            else:
+                time.sleep(0.1)
+                self.league_startup
+                self.move_top("Riot Client Main")
+    
 
     def login(self, username, password):
         searching = True
-        count = 1
-        picture = pya.locateOnScreen('./locate/riot.png')
         while searching:
+            picture = pya.locateOnScreen("./locate/login.png")
             if picture:
                 searching = False
-                cord_x = int(picture[0] + picture[2] / 2)
-                cord_y = (int(picture[1] + picture[3] / 2)) + 140
-                pya.click(cord_x, cord_y)
+                print(picture)
+                pya.click(int(picture[0] + picture[2] / 2), (int(picture[1] + picture[3] / 2)) + 160)
                 pya.hotkey('ctrl', 'a', 'backspace')
                 pya.write(username)
-                cord_y = (int(picture[1] + picture[3] / 2)) + 200
-                pya.click(cord_x, cord_y)
+
+                pya.click(int(picture[0] + picture[2] / 2), (int(picture[1] + picture[3] / 2)) + 220)
                 pya.hotkey('ctrl', 'a', 'backspace')
                 pya.write(password)
                 pya.press('enter')
             else:
-                self.move_top("Riot Client Main")
-                count += 1
-                if count == 4:
-                    count = 1
-                self.clear
-                print(f"Searching{count*'.'}")
                 time.sleep(0.1)
+                self.move_top("Riot Client Main")
