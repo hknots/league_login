@@ -1,4 +1,4 @@
-import requests
+from requests import get
 from database import Database
 
 db = Database()
@@ -6,7 +6,7 @@ db = Database()
 def valid_api():
     api = db.get_api # Fetches api
 
-    league_user = requests.get(f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/bob?api_key={api}").json()
+    league_user = get(f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/bob?api_key={api}").json()
     for key in league_user:
         if isinstance(league_user[key], dict):
             return False
@@ -19,8 +19,8 @@ def refresh_rank(id):
     ign = user['ign'][0]
     api = db.get_api # Fetches api
 
-    league_user = requests.get(f"https://{server}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{ign}?api_key={api}").json()
-    ranked_stats = requests.get(f"https://{server}.api.riotgames.com/lol/league/v4/entries/by-summoner/{league_user['id']}?api_key={api}").json()
+    league_user = get(f"https://{server}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{ign}?api_key={api}").json()
+    ranked_stats = get(f"https://{server}.api.riotgames.com/lol/league/v4/entries/by-summoner/{league_user['id']}?api_key={api}").json()
 
     if len(ranked_stats) > 0: # If ranked stats exist
         for i in range(len(ranked_stats)): # Loops through all different rank modes f.ex Soloq/TFT/Flex

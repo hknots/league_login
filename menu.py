@@ -1,8 +1,8 @@
-import msvcrt as m
+from msvcrt import getch
 from database import Database
 from riot_api import refresh_rank, valid_api
 from window import Window
-import os
+from os import system, name
 
 window = Window()
 db = Database()
@@ -13,7 +13,7 @@ class Menu:
     
     @property
     def clear(self):
-        os.system('cls' if os.name == 'nt' else 'clear')
+        system('cls' if name == 'nt' else 'clear')
     
     
     @property
@@ -183,7 +183,7 @@ class Menu:
         if len(db.get_ids) < 1: # Checks if users exist
             print("No users detected!")
             print("Press ANY key to continue")
-            m.getch() # Returns once a key is pressed
+            getch() # Returns once a key is pressed
 
         elif not valid_api(): # Invalid API
             self.exit_message(0)

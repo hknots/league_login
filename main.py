@@ -1,6 +1,5 @@
 from menu import Menu
 from window import Window
-import pyautogui as pya
 
 if __name__ == "__main__":
     menu = Menu()
