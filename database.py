@@ -1,8 +1,8 @@
-import sqlite3
+from sqlite3 import connect
 
 class Database:
     def __init__(self):
-        self.conn = sqlite3.connect('database.db')
+        self.conn = connect('database.db')
         self.cursor = self.conn.cursor()
         self.try_make_table
 

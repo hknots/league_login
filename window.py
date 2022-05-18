@@ -1,5 +1,5 @@
 from database import Database
-from win32gui import GetWindowText, GetForegroundWindow, FindWindow, MoveWindow, ShowWindow, SetForegroundWindow, GetWindowRect
+from win32gui import GetWindowText, GetForegroundWindow, FindWindow, MoveWindow, ShowWindow, SetForegroundWindow, GetWindowRect, EnableWindow
 from pyautogui import press, locateCenterOnScreen, locateOnScreen, click, hotkey, write
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess
 from subprocess import Popen
@@ -13,7 +13,13 @@ class Window:
     def __init__(self):
         self.name = GetWindowText (GetForegroundWindow())
         self.handle = FindWindow(None, self.name)
+        EnableWindow(self.handle, False)
         self.adjust
+    
+
+    @property
+    def enable_window(self):
+        EnableWindow(self.handle, True)
 
 
     @property

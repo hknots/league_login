@@ -8,6 +8,7 @@ if __name__ == "__main__":
     window.look_for_login()
     window.move_top("Riot Client Main")
     window.move_top(window.name)
+    window.enable_window
 
     main_menu = True
     while main_menu:
