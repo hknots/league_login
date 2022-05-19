@@ -1,4 +1,5 @@
 from database import Database
+from msvcrt import getch
 from win32gui import GetWindowText, GetForegroundWindow, FindWindow, MoveWindow, ShowWindow, SetForegroundWindow, GetWindowRect, EnableWindow
 from pyautogui import press, locateCenterOnScreen, locateOnScreen, click, hotkey, write
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess
@@ -8,6 +9,7 @@ from time import sleep
 
 db = Database()
 login_picture = "./locate/login.png"
+logged_in_picture = "./locate/logged_in.png"
 
 class Window:
     def __init__(self):
@@ -42,9 +44,11 @@ class Window:
                     start_attempt = False
                 except FileNotFoundError:
                     self.clear
+                    self.enable_window
                     print("RiotClientServices.exe was not found")
                     print("Paste the correct path below f.ex C:\Riot Games\Riot Client\\")
                     path = input("Path: ")
+                    EnableWindow(self.handle, False)
                     db.execute_commit(f"UPDATE lolpath SET path='{path}'")
 
 
@@ -68,7 +72,7 @@ class Window:
     def move_top(self, window_name):
         hwnd = FindWindow(None, window_name)
         if hwnd != 0:
-            ShowWindow(hwnd,5)
+            ShowWindow(hwnd,1)
             press('alt')
             SetForegroundWindow(hwnd)
             rect = GetWindowRect(hwnd)
@@ -80,26 +84,30 @@ class Window:
     def look_for_login(self):
         searching = True
         while searching:
-            picture = locateCenterOnScreen("./locate/login.png")
-            logged_in = locateCenterOnScreen("./locate/logged_in.png")
+            picture = locateCenterOnScreen(login_picture, confidence=0.75)
+            logged_in = locateCenterOnScreen(logged_in_picture, confidence=0.75)
             
             if picture:
                 searching = False
             elif logged_in:
                 self.clear
+                self.move_top(self.name)
+                self.enable_window
                 print("You are logged in")
-                sleep(1)
+                print("Press ANY key to continue...")
+                getch()
                 exit()
             else:
                 sleep(0.1)
                 self.league_startup
+                self.move_top("League of Legends")
                 self.move_top("Riot Client Main")
     
 
     def login(self, username, password):
         searching = True
         while searching:
-            picture = locateOnScreen("./locate/login.png")
+            picture = locateOnScreen(login_picture)
             if picture:
                 searching = False
                 print(picture)
